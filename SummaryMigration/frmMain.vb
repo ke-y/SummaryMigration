@@ -52,6 +52,32 @@ Public Class frmMain
                                 Else
                                     errList.Add(Trim(strTmp(1)) & "が存在しません")
                                 End If
+                            Case "CSV_PATH"
+                                If Trim(strTmp(1)) <> "" Then
+                                    env.csvpath = Trim(strTmp(1))
+
+                                    putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Set the CSV input path")
+                                Else
+                                    errList.Add("CSV_PATHが未指定です")
+                                End If
+                            Case "CSV_ID"
+                                If Trim(strTmp(1)) <> "" Then
+                                    env.csvId = Trim(strTmp(1))
+
+                                    putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Set the CSV access ID")
+                                End If
+                            Case "CSV_PASS"
+                                If Trim(strTmp(1)) <> "" Then
+                                    env.csvPass = Trim(strTmp(1))
+
+                                    putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Set the CSV access Pass")
+                                End If
+                            Case "CSV_FILE"
+                                If Trim(strTmp(1)) <> "" Then
+                                    env.csvFile = Trim(strTmp(1))
+
+                                    putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Set the CSV file name pattern")
+                                End If
                         End Select
                     End If
                 End If
