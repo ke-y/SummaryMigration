@@ -8,7 +8,7 @@ Imports System.Runtime.InteropServices
 
 ' アセンブリ属性の値を確認します
 
-<Assembly: AssemblyTitle("NECデータ移行ツール")>
+<Assembly: AssemblyTitle("文書データ移行ツール")>
 <Assembly: AssemblyDescription("")>
 <Assembly: AssemblyCompany("")>
 <Assembly: AssemblyProduct("SummaryMigration")>
