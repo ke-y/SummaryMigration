@@ -8,11 +8,11 @@ Imports System.Runtime.InteropServices
 
 ' アセンブリ属性の値を確認します
 
-<Assembly: AssemblyTitle("SummaryMigration")>
+<Assembly: AssemblyTitle("NECデータ移行ツール")>
 <Assembly: AssemblyDescription("")>
 <Assembly: AssemblyCompany("")>
 <Assembly: AssemblyProduct("SummaryMigration")>
-<Assembly: AssemblyCopyright("Copyright ©  2017")>
+<Assembly: AssemblyCopyright("Copyright 2017 KY")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>
