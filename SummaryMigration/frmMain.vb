@@ -2,6 +2,7 @@
 
 Public Class frmMain
     Private env As New envData
+    Private csvData As New dbConnect
 
     ''' <summary>
     ''' 起動時処理
@@ -15,6 +16,8 @@ Public Class frmMain
 
         'iniファイルの読み込み
         readIni()
+        'DB初期化
+        initialDB()
 
     End Sub
 
@@ -112,4 +115,27 @@ Public Class frmMain
 
     End Sub
 
+    ''' <summary>
+    ''' データ格納DBの初期化
+    ''' </summary>
+    Private Sub initialDB()
+        Dim file_pass As String
+        Dim msg As String
+
+        putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Iinitialize DB")
+
+        file_pass = env.appPath & env.dbPath
+        If checkExists(file_pass, True) Then
+            csvData.setPath = file_pass
+            msg = csvData.initDB()
+
+            putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", msg)
+        Else
+            MsgBox(file_pass & "が存在しません" & vbCrLf & "システムを終了します")
+
+            putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Stop System")
+            Close()
+        End If
+
+    End Sub
 End Class

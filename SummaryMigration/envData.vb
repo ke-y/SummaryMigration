@@ -4,6 +4,7 @@ Friend Class envData
     Private _appPath As String
     Private _appIni As String
     Private _appLog As String
+    Private _dbPath As String
     Private _editorPath As String
     Private _csvPath As String
     Private _csvId As String
@@ -15,6 +16,7 @@ Friend Class envData
         _appPath = "C:\SummaryMigration"
         _appIni = "\conf\SummaryMigration.ini"
         _appLog = "\log"
+        _dbPath = "\conf\CsvData.sqlite"
         _editorPath = "C:\Windows\System32\notepad.exe"
         _csvPath = ""
         _csvId = ""
@@ -50,6 +52,16 @@ Friend Class envData
     Friend ReadOnly Property appLog() As String
         Get
             Return _appLog
+        End Get
+    End Property
+
+    ''' <summary>
+    ''' CSVデータ格納先
+    ''' </summary>
+    ''' <returns></returns>
+    Friend ReadOnly Property dbPath() As String
+        Get
+            Return _dbPath
         End Get
     End Property
 
