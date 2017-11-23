@@ -9,6 +9,7 @@ Friend Class envData
     Private _csvId As String
     Private _csvPass As String
     Private _csvFile As String
+    Private _csvDrive As String
 
     Friend Sub New()
         _appPath = "C:\SummaryMigration"
@@ -19,6 +20,7 @@ Friend Class envData
         _csvId = ""
         _csvPass = ""
         _csvFile = "*.csv"
+        _csvDrive = "S"
     End Sub
 
     ''' <summary>
@@ -113,6 +115,16 @@ Friend Class envData
         End Set
         Get
             Return _csvFile
+        End Get
+    End Property
+
+    ''' <summary>
+    ''' NWドライブ
+    ''' </summary>
+    ''' <returns></returns>
+    Friend ReadOnly Property csvDrive() As String
+        Get
+            Return _csvDrive
         End Get
     End Property
 

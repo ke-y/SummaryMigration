@@ -27,6 +27,7 @@ Public Class frmMain
         Dim file_pass As String
         Dim str As String
         Dim strTmp() As String
+        Dim tmpStr As String
 
         putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Read the Ini file")
 
@@ -88,6 +89,19 @@ Public Class frmMain
 
             putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Stop System")
             Close()
+        End If
+
+        tmpStr = ""
+        If loginDir(env.csvDrive, env.csvPath, env.csvId, env.csvPass, tmpStr) Then
+            putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Access OK " & " [" & env.csvPath & "]")
+
+            If Not logoffDir(env.csvDrive, tmpStr) Then
+                putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "CAUTION : Count Dir logoff Error. Win32 API Error Code = " & tmpStr & " [" & env.csvPath & "]")
+            End If
+        Else
+            errList.Add(env.csvPath & "にアクセスできません")
+
+            putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "CAUTION : Count Dir login Error. Win32 API Error Code = " & tmpStr & " [" & env.csvPath & "]")
         End If
 
         If errList.Count > 0 Then
