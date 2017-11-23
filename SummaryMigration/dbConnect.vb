@@ -67,9 +67,13 @@ Friend Class dbConnect
         msg = ""
         'SQLの実行
         If Open() Then
-            strSql = "delete from datatable"
-            _adp = New SQLiteDataAdapter(strSql, _conn)
-            _adp.Fill(dtTbl)
+            strSql = "delete from csvdata;"
+            Try
+                _adp = New SQLiteDataAdapter(strSql, _conn)
+                _adp.Fill(dtTbl)
+            Catch ex As Exception
+                'もともとデータがない場合にExceptionが発生する
+            End Try
 
             If dtTbl.Rows.Count > 0 Then
                 msg = "Failed to initialize DB"

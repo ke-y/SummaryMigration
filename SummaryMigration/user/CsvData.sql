@@ -1,0 +1,16 @@
+CREATE TABLE csvdata (
+       filepath     text not null,
+       docid		text not null,
+       patid        text not null,
+       doccode		text not null,
+       docname		text not null,
+       deptcode		text not null,
+       deptname     text not null,
+       cruserid     text not null,
+       crusername   text not null,
+       crdate       text not null,
+       opuserid     text not null,
+       opdate       text not null,
+       pageno       text not null,
+       totalpaneno  text not null,
+       );
