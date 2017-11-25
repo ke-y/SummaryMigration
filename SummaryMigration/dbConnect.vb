@@ -1,6 +1,6 @@
 ﻿Option Explicit On
 
-Friend Class dbConnect
+Friend MustInherit Class dbConnect
 
     Private _conn As SQLiteConnection
     Private _cmd As SQLiteCommand
@@ -13,7 +13,7 @@ Friend Class dbConnect
     End Sub
 
     ''' <summary>
-    ''' 接続先を指定
+    ''' 接続先DBを指定
     ''' </summary>
     Friend WriteOnly Property setPath() As String
         Set(ByVal value As String)
@@ -32,6 +32,7 @@ Friend Class dbConnect
 
             Return True
         Catch ex As Exception
+            System.Diagnostics.Debug.WriteLine(ex.Message)
         End Try
 
         Return False
@@ -43,9 +44,7 @@ Friend Class dbConnect
     ''' <returns></returns>
     Private Function Close() As Boolean
         Try
-            If _conn.State = ConnectionState.Open Then
-                _conn.Close()
-            End If
+            If _conn.State = ConnectionState.Open Then _conn.Close()
 
             Return True
         Catch ex As Exception
@@ -56,36 +55,124 @@ Friend Class dbConnect
     End Function
 
     ''' <summary>
-    ''' DBデータ初期化
+    ''' SQL実行(INSERT/UPDATE/DELETE)
+    ''' </summary>
+    ''' <param name="strSql"></param>
+    ''' <returns></returns>
+    Private Function ExecuteNonQuery(strSql As String) As Integer
+        Dim count As Integer
+
+        count = -1
+        Try
+            If _conn.State = ConnectionState.Open Then
+                _cmd.CommandText = strSql
+                count = _cmd.ExecuteNonQuery
+            End If
+        Catch ex As Exception
+            System.Diagnostics.Debug.WriteLine(ex.Message)
+        End Try
+
+        Return count
+    End Function
+
+    ''' <summary>
+    ''' SQL実行(SELECT)
+    ''' </summary>
+    ''' <param name="strSQL"></param>
+    ''' <returns></returns>
+    Protected Function ExecuteQuery(strSQL As String) As DataTable
+        Dim adapter = New SQLiteDataAdapter()
+        Dim dtTbl As New DataTable()
+
+        Try
+            If _conn.State <> ConnectionState.Open Then Return dtTbl
+
+            adapter = New SQLiteDataAdapter(strSQL, _conn)
+            adapter.Fill(dtTbl)
+        Catch ex As Exception
+            System.Diagnostics.Debug.WriteLine(ex.Message)
+        End Try
+
+        Return dtTbl
+    End Function
+
+
+    ''' <summary>
+    ''' トランザクション開始処理
     ''' </summary>
     ''' <returns></returns>
-    Friend Function initDB() As String
-        Dim dtTbl = New DataTable
-        Dim strSql As String
-        Dim msg As String
+    Private Function BeginTransaction() As Boolean
+        Try
+            If Not Open() Then Return False
+            If _conn.State = ConnectionState.Closed Then Return False
 
-        msg = ""
-        'SQLの実行
-        If Open() Then
-            strSql = "delete from csvdata;"
-            Try
-                _adp = New SQLiteDataAdapter(strSql, _conn)
-                _adp.Fill(dtTbl)
-            Catch ex As Exception
-                'もともとデータがない場合にExceptionが発生する
-            End Try
+            _cmd.Transaction = _conn.BeginTransaction()
 
-            If dtTbl.Rows.Count > 0 Then
-                msg = "Failed to initialize DB"
-            Else
-                msg = "Success initialize DB"
-            End If
-        End If
+            Return True
+        Catch ex As Exception
+            System.Diagnostics.Debug.WriteLine(ex.Message)
+        End Try
 
-        Close()
-        dtTbl = Nothing
-
-        Return msg
+        Return False
     End Function
+
+    ''' <summary>
+    ''' ロールバック処理
+    ''' </summary>
+    ''' <returns></returns>
+    Private Function Rollback() As Boolean
+        Try
+            _cmd.Transaction.Rollback()
+
+            Return True
+        Catch ex As Exception
+            System.Diagnostics.Debug.WriteLine(ex.Message)
+        End Try
+
+        Return False
+    End Function
+
+    ''' <summary>
+    ''' トランザクション終了処理
+    ''' </summary>
+    ''' <returns></returns>
+    Private Function EndTransaction() As Boolean
+        Try
+            _cmd.Transaction.Commit()
+            Close()
+
+            Return True
+        Catch ex As Exception
+            System.Diagnostics.Debug.WriteLine(ex.Message)
+        End Try
+
+        Return False
+    End Function
+
+    ''' <summary>
+    ''' データベース処理
+    ''' </summary>
+    ''' <returns></returns>
+    Friend Function Execute() As Boolean
+        Dim result As Boolean = True
+
+        If Not BeginTransaction() Then Return False
+
+        Try
+            DataProcessing()
+        Catch ex As Exception
+            Rollback()
+            result = False
+        End Try
+
+        If Not EndTransaction() Then result = False
+
+        Return result
+    End Function
+
+    ''' <summary>
+    ''' データ操作(実際のデータ操作を継承先のクラスで実装)
+    ''' </summary>
+    Protected MustOverride Sub DataProcessing()
 
 End Class
