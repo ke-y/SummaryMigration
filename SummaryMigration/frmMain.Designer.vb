@@ -22,16 +22,28 @@ Partial Class frmMain
     'コード エディターを使って変更しないでください。
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.btnGetSummaryInfo = New System.Windows.Forms.Button()
         Me.SuspendLayout()
+        '
+        'btnGetSummaryInfo
+        '
+        Me.btnGetSummaryInfo.Location = New System.Drawing.Point(84, 170)
+        Me.btnGetSummaryInfo.Name = "btnGetSummaryInfo"
+        Me.btnGetSummaryInfo.Size = New System.Drawing.Size(148, 55)
+        Me.btnGetSummaryInfo.TabIndex = 0
+        Me.btnGetSummaryInfo.Text = "サマリ情報取得"
+        Me.btnGetSummaryInfo.UseVisualStyleBackColor = True
         '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(292, 273)
+        Me.Controls.Add(Me.btnGetSummaryInfo)
         Me.Name = "frmMain"
         Me.ResumeLayout(False)
 
     End Sub
 
+    Friend WithEvents btnGetSummaryInfo As Button
 End Class

@@ -13,6 +13,6 @@ CREATE TABLE SummaryData (
        OPDate      text not null,
        PageNo      integer not null,
        TotalPaneNo integer not null,
-	   OutputFlg   text not null,
-	   NewFileName text not null
+       OutputFlg   text not null,
+       NewFileName text not null
        );

@@ -16,7 +16,7 @@ Friend Class envData
         _appPath = "C:\SummaryMigration"
         _appIni = "\conf\SummaryMigration.ini"
         _appLog = "\log"
-        _dbPath = "\conf\CsvData.sqlite"
+        _dbPath = "\conf\SummaryData.sqlite"
         _editorPath = "C:\Windows\System32\notepad.exe"
         _csvPath = ""
         _csvId = ""

@@ -60,9 +60,8 @@ Friend Class dbConnect
     ''' <param name="strSql"></param>
     ''' <returns></returns>
     Private Function ExecuteNonQuery(strSql As String) As Integer
-        Dim count As Integer
+        Dim count As Integer = -1
 
-        count = -1
         Try
             If _conn.State = ConnectionState.Open Then
                 _cmd.CommandText = strSql
