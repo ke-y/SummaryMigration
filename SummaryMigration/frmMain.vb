@@ -46,8 +46,8 @@ Public Class frmMain
         Dim errList As New List(Of String)
         Dim sRead As IO.StreamReader
         Dim file_pass As String
-        Dim str As String
-        Dim strTmp() As String
+        Dim strLine As String
+        Dim strLineAttr() As String
         Dim msg As String = ""
 
         putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Read the Ini file")
@@ -57,52 +57,52 @@ Public Class frmMain
             sRead = New IO.StreamReader(file_pass, System.Text.Encoding.GetEncoding("Shift_JIS"))
 
             Do
-                str = sRead.ReadLine()
-                If str Is Nothing Then
+                strLine = sRead.ReadLine()
+                If strLine Is Nothing Then
                     Exit Do
                 End If
 
-                If Trim(str) <> "" Then
-                    If str.Substring(0, 1) <> "*" Then
-                        strTmp = Split(str, "=")
-                        Select Case Trim(strTmp(0))
+                If Trim(strLine) <> "" Then
+                    If strLine.Substring(0, 1) <> "*" Then
+                        strLineAttr = Split(strLine, "=")
+                        Select Case Trim(strLineAttr(0))
                             Case "EDITOR"
-                                If checkExists(Trim(strTmp(1)), True) Then
-                                    env.editorPath = Trim(strTmp(1))
+                                If checkExists(Trim(strLineAttr(1)), True) Then
+                                    env.editorPath = Trim(strLineAttr(1))
 
                                     putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the Editor path")
                                 Else
-                                    errList.Add(Trim(strTmp(1)) & "が存在しません")
+                                    errList.Add(Trim(strLineAttr(1)) & "が存在しません")
                                 End If
                             Case "CSV_PATH"
-                                If Trim(strTmp(1)) <> "" Then
-                                    env.csvPath = Trim(strTmp(1))
+                                If Trim(strLineAttr(1)) <> "" Then
+                                    env.csvPath = Trim(strLineAttr(1))
 
                                     putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the CSV input path")
                                 Else
                                     errList.Add("CSV_PATHが未指定です")
                                 End If
                             Case "CSV_ID"
-                                If Trim(strTmp(1)) <> "" Then
-                                    env.csvId = Trim(strTmp(1))
+                                If Trim(strLineAttr(1)) <> "" Then
+                                    env.csvId = Trim(strLineAttr(1))
 
                                     putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the CSV access ID")
                                 End If
                             Case "CSV_PASS"
-                                If Trim(strTmp(1)) <> "" Then
-                                    env.csvPass = Trim(strTmp(1))
+                                If Trim(strLineAttr(1)) <> "" Then
+                                    env.csvPass = Trim(strLineAttr(1))
 
                                     putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the CSV access Pass")
                                 End If
                             Case "CSV_FILE"
-                                If Trim(strTmp(1)) <> "" Then
-                                    env.csvFile = Trim(strTmp(1))
+                                If Trim(strLineAttr(1)) <> "" Then
+                                    env.csvFile = Trim(strLineAttr(1))
 
                                     putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the CSV file name pattern")
                                 End If
                             Case "TARGET"
-                                If Trim(strTmp(1)) <> "" Then
-                                    env.setTargetCode(Trim(strTmp(1)))
+                                If Trim(strLineAttr(1)) <> "" Then
+                                    env.setTargetCode(Trim(strLineAttr(1)))
 
                                     putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the target DocCode")
                                 End If
@@ -227,8 +227,8 @@ Public Class frmMain
                         Exit Do
                     End If
 
-                    outputFlg = ""
-                    newName = ""
+                    outputFlg = " "
+                    newName = " "
                     checkMigration(strline, outputFlg, newName)
                     strSql.Add("insert into SummaryData values (" & strline & ", " & Chr(34) & outputFlg & Chr(34) & ", " & Chr(34) & newName & Chr(34) & ")")
                 Loop
@@ -253,14 +253,35 @@ Public Class frmMain
 
     End Sub
 
-    Private Sub checkMigration(str As String, ByRef outputFlg As String, ByRef newName As String)
+    ''' <summary>
+    ''' 移行対象ファイルかチェックして、新しいファイル名を付与
+    ''' </summary>
+    ''' <param name="strLine"></param>
+    ''' <param name="outputFlg"></param>
+    ''' <param name="newName"></param>
+    Private Sub checkMigration(strLine As String, ByRef outputFlg As String, ByRef newName As String)
+        Dim strLineAttr() As String
         Dim strTmp() As String
         Dim docCode As String
+        Dim patId As String
+        Dim docDate As String
+        Dim orderNo As String
+        Dim transactionDate As String
+        Dim deptCode As String
 
-        strTmp = Split(str, ",")
-        docCode = strTmp(3).Replace(Chr(34), "")
+        strLineAttr = Split(strLine, ",")
+        docCode = strLineAttr(3).Replace(Chr(34), "")
         If env.getTargetCode().IndexOf(docCode) <> -1 Then
             outputFlg = "C"
+
+            strTmp = Split(strLineAttr(1), "_")
+            patId = strLineAttr(2).Replace(Chr(34), "")
+            docDate = strTmp(1)
+            orderNo = strTmp(6).Replace(Chr(34), "").Replace(".PDF", "")
+            transactionDate = strLineAttr(11).Replace(Chr(34), "")
+            deptCode = strLineAttr(5).Replace(Chr(34), "")
+
+            newName = patId & "_" & docDate & "_SMR-02_" & orderNo & "_" & transactionDate & "_" & deptCode & "_1.pdf"
         End If
     End Sub
 End Class
