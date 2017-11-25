@@ -1,6 +1,6 @@
 ﻿Option Explicit On
 
-Friend MustInherit Class dbConnect
+Friend Class dbConnect
 
     Private _conn As SQLiteConnection
     Private _cmd As SQLiteCommand
@@ -80,7 +80,7 @@ Friend MustInherit Class dbConnect
     ''' </summary>
     ''' <param name="strSQL"></param>
     ''' <returns></returns>
-    Protected Function ExecuteQuery(strSQL As String) As DataTable
+    Private Function ExecuteQuery(strSQL As String) As DataTable
         Dim adapter = New SQLiteDataAdapter()
         Dim dtTbl As New DataTable()
 
@@ -95,7 +95,6 @@ Friend MustInherit Class dbConnect
 
         Return dtTbl
     End Function
-
 
     ''' <summary>
     ''' トランザクション開始処理
@@ -150,16 +149,26 @@ Friend MustInherit Class dbConnect
     End Function
 
     ''' <summary>
-    ''' データベース処理
+    ''' Insert/Update/Delete操作
     ''' </summary>
+    ''' <param name="strSql">SQL内容</param>
+    ''' <param name="count">処理件数</param>
     ''' <returns></returns>
-    Friend Function Execute() As Boolean
+    Friend Function ProcUpdate(strSql As String(), ByRef count As Integer) As Boolean
         Dim result As Boolean = True
+        Dim index As Integer
+        Dim tmpnum As Integer
 
         If Not BeginTransaction() Then Return False
 
         Try
-            DataProcessing()
+            count = 0
+            For index = 0 To strSql.Count
+                tmpnum = ExecuteNonQuery(strSql(index))
+                If tmpnum <> -1 Then
+                    count = count + tmpnum
+                End If
+            Next
         Catch ex As Exception
             Rollback()
             result = False
@@ -171,8 +180,26 @@ Friend MustInherit Class dbConnect
     End Function
 
     ''' <summary>
-    ''' データ操作(実際のデータ操作を継承先のクラスで実装)
+    ''' Select操作
     ''' </summary>
-    Protected MustOverride Sub DataProcessing()
+    ''' <param name="strSql">SQL内容</param>
+    ''' <param name="dtTbl">Select結果</param>
+    ''' <returns></returns>
+    Friend Function ProcSelect(strSql As String, ByRef dtTbl As DataTable) As Boolean
+        Dim result As Boolean = True
+
+        If Not BeginTransaction() Then Return False
+
+        Try
+            dtTbl = ExecuteQuery(strSql)
+        Catch ex As Exception
+            Rollback()
+            result = False
+        End Try
+
+        If Not EndTransaction() Then result = False
+
+        Return result
+    End Function
 
 End Class
