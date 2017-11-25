@@ -275,7 +275,7 @@ Public Class frmMain
             outputFlg = "C"
 
             strTmp = Split(strLineAttr(1), "_")
-            patId = strLineAttr(2).Replace(Chr(34), "")
+            patId = "00" & strLineAttr(2).Replace(Chr(34), "")
             docDate = strTmp(1)
             orderNo = strTmp(6).Replace(Chr(34), "").Replace(".PDF", "")
             transactionDate = strLineAttr(11).Replace(Chr(34), "")
