@@ -26,7 +26,7 @@ Friend Class envData
     End Sub
 
     ''' <summary>
-    ''' アプリ配置先フォルダ
+    ''' アプリ配置フォルダ
     ''' </summary>
     ''' <returns></returns>
     Friend ReadOnly Property appPath() As String
@@ -56,7 +56,7 @@ Friend Class envData
     End Property
 
     ''' <summary>
-    ''' CSVデータ格納先
+    ''' CSVデータ格納先DB
     ''' </summary>
     ''' <returns></returns>
     Friend ReadOnly Property dbPath() As String
@@ -79,7 +79,7 @@ Friend Class envData
     End Property
 
     ''' <summary>
-    ''' CSV格納先
+    ''' CSVファイル格納先
     ''' </summary>
     ''' <returns></returns>
     Friend Property csvPath() As String
@@ -92,7 +92,7 @@ Friend Class envData
     End Property
 
     ''' <summary>
-    ''' CSV格納先
+    ''' CSVファイル格納先アクセスID
     ''' </summary>
     ''' <returns></returns>
     Friend Property csvId() As String
@@ -105,7 +105,7 @@ Friend Class envData
     End Property
 
     ''' <summary>
-    ''' CSV格納先
+    ''' CSVファイル格納先アクセスパスワード
     ''' </summary>
     ''' <returns></returns>
     Friend Property csvPass() As String
@@ -118,7 +118,7 @@ Friend Class envData
     End Property
 
     ''' <summary>
-    ''' CSV格納先
+    ''' CSVファイル名規約
     ''' </summary>
     ''' <returns></returns>
     Friend Property csvFile() As String
@@ -131,7 +131,7 @@ Friend Class envData
     End Property
 
     ''' <summary>
-    ''' NWドライブ
+    ''' NWドライブ名
     ''' </summary>
     ''' <returns></returns>
     Friend ReadOnly Property csvDrive() As String
