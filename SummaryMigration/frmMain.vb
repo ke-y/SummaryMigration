@@ -126,7 +126,15 @@ Public Class frmMain
                                 If Trim(strLineAttr(1)) <> "" Then
                                     env.setTargetCode(Trim(strLineAttr(1)))
 
-                                    putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the target DocCode")
+                                    putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the Target DocCode")
+                                End If
+                            Case "ROOT"
+                                If checkExists(Trim(strLineAttr(1)), False) Then
+                                    env.rootDir = Trim(strLineAttr(1))
+
+                                    putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the Root Directory")
+                                Else
+                                    errList.Add(Trim(strLineAttr(1)) & "が存在しません")
                                 End If
                         End Select
                     End If

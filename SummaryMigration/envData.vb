@@ -12,6 +12,7 @@ Friend Class envData
     Private _csvFile As String
     Private _csvDrive As String
     Private _targetCode As List(Of String)
+    Private _rootDir As String
 
     Friend Sub New()
         _appPath = "C:\SummaryMigration"
@@ -25,6 +26,7 @@ Friend Class envData
         _csvFile = "*.csv"
         _csvDrive = "S"
         _targetCode = New List(Of String)
+        _rootDir = "."
     End Sub
 
     ''' <summary>
@@ -163,4 +165,16 @@ Friend Class envData
         Return _targetCode
     End Function
 
+    ''' <summary>
+    ''' 移行先ルートディレクトリ
+    ''' </summary>
+    ''' <returns></returns>
+    Friend Property rootDir As String
+        Set(value As String)
+            _rootDir = value
+        End Set
+        Get
+            Return _rootDir
+        End Get
+    End Property
 End Class
