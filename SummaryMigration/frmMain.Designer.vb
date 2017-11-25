@@ -24,6 +24,8 @@ Partial Class frmMain
     Private Sub InitializeComponent()
         Me.btnGetSummaryInfo = New System.Windows.Forms.Button()
         Me.dataview = New System.Windows.Forms.DataGridView()
+        Me.btnMigration = New System.Windows.Forms.Button()
+        Me.status = New System.Windows.Forms.Label()
         CType(Me.dataview, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -45,19 +47,43 @@ Partial Class frmMain
         Me.dataview.Size = New System.Drawing.Size(1097, 509)
         Me.dataview.TabIndex = 1
         '
+        'btnMigration
+        '
+        Me.btnMigration.Location = New System.Drawing.Point(163, 12)
+        Me.btnMigration.Name = "btnMigration"
+        Me.btnMigration.Size = New System.Drawing.Size(119, 30)
+        Me.btnMigration.TabIndex = 2
+        Me.btnMigration.Text = "サマリ移行"
+        Me.btnMigration.UseVisualStyleBackColor = True
+        '
+        'status
+        '
+        Me.status.AutoSize = True
+        Me.status.Font = New System.Drawing.Font("MS UI Gothic", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
+        Me.status.Location = New System.Drawing.Point(321, 17)
+        Me.status.Name = "status"
+        Me.status.Size = New System.Drawing.Size(60, 19)
+        Me.status.TabIndex = 3
+        Me.status.Text = "status"
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1121, 569)
+        Me.Controls.Add(Me.status)
+        Me.Controls.Add(Me.btnMigration)
         Me.Controls.Add(Me.dataview)
         Me.Controls.Add(Me.btnGetSummaryInfo)
         Me.Name = "frmMain"
         CType(Me.dataview, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
 
     Friend WithEvents btnGetSummaryInfo As Button
     Friend WithEvents dataview As DataGridView
+    Friend WithEvents btnMigration As Button
+    Friend WithEvents status As Label
 End Class

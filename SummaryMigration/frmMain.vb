@@ -16,6 +16,8 @@ Public Class frmMain
 
         readIni()
         initializeDB()
+        btnMigration.Enabled = False
+        status.Text = "Status:未実行"
 
     End Sub
 
@@ -33,10 +35,30 @@ Public Class frmMain
 
         If csvData.ProcSelect("select * from SummaryData", dtTbl) Then
             dataview.DataSource = dtTbl
+            btnMigration.Enabled = True
+            status.Text = "Status:サマリ情報取得済み"
 
             putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Display DB Insert Result")
         End If
 
+    End Sub
+
+    ''' <summary>
+    ''' サマリファイルを移行
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub btnMigration_Click(sender As Object, e As EventArgs) Handles btnMigration.Click
+        putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "SummaryFile Migration Start")
+
+        btnGetSummaryInfo.Enabled = False
+
+
+
+
+
+        btnGetSummaryInfo.Enabled = True
+        status.Text = "Status:サマリ移行完了"
     End Sub
 
     ''' <summary>
@@ -284,4 +306,5 @@ Public Class frmMain
             newName = patId & "_" & docDate & "_SMR-02_" & orderNo & "_" & transactionDate & "_" & deptCode & "_1.pdf"
         End If
     End Sub
+
 End Class
