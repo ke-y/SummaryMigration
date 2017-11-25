@@ -120,22 +120,29 @@ Public Class frmMain
     ''' </summary>
     Private Sub initialDB()
         Dim file_pass As String
-        Dim msg As String
+        Dim sql As New List(Of String)
+        Dim count As Integer
 
-        putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Iinitialize DB")
+        putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Initialize DB")
 
         file_pass = env.appPath & env.dbPath
         If checkExists(file_pass, True) Then
             csvData.setPath = file_pass
-            msg = csvData.initDB()
 
-            putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", msg)
+            sql.Clear()
+            sql.Add("delete from csvdata")
+            If csvData.ProcUpdate(sql, count) Then
+                putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Success initialize DB")
+            Else
+                putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Failed to initialize DB")
+            End If
         Else
             MsgBox(file_pass & "が存在しません" & vbCrLf & "システムを終了します")
 
-            putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Stop System")
+            putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "stop system")
             Close()
         End If
 
     End Sub
+
 End Class

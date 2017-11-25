@@ -154,7 +154,7 @@ Friend Class dbConnect
     ''' <param name="strSql">SQL内容</param>
     ''' <param name="count">処理件数</param>
     ''' <returns></returns>
-    Friend Function ProcUpdate(strSql As String(), ByRef count As Integer) As Boolean
+    Friend Function ProcUpdate(strSql As List(Of String), ByRef count As Integer) As Boolean
         Dim result As Boolean = True
         Dim index As Integer
         Dim tmpnum As Integer
@@ -163,7 +163,7 @@ Friend Class dbConnect
 
         Try
             count = 0
-            For index = 0 To strSql.Count
+            For index = 0 To strSql.Count - 1
                 tmpnum = ExecuteNonQuery(strSql(index))
                 If tmpnum <> -1 Then
                     count = count + tmpnum
