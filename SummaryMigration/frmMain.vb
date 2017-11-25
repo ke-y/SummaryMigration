@@ -26,9 +26,14 @@ Public Class frmMain
     ''' <param name="e"></param>
     Private Sub btnGetSummaryInfo_Click(sender As Object, e As EventArgs) Handles btnGetSummaryInfo.Click
         Dim csvfile As List(Of String)
+        Dim dtTbl As New DataTable
 
         csvfile = getCsvFilePath()
         registDB(csvfile)
+
+        If csvData.ProcSelect("select * from SummaryData", dtTbl) Then
+            dataview.DataSource = dtTbl
+        End If
 
     End Sub
 
