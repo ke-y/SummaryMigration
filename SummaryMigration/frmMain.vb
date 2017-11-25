@@ -33,6 +33,8 @@ Public Class frmMain
 
         If csvData.ProcSelect("select * from SummaryData", dtTbl) Then
             dataview.DataSource = dtTbl
+
+            putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Display DB Insert Result")
         End If
 
     End Sub
@@ -98,6 +100,12 @@ Public Class frmMain
 
                                     putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the CSV file name pattern")
                                 End If
+                            Case "TARGET"
+                                If Trim(strTmp(1)) <> "" Then
+                                    env.setTargetCode(Trim(strTmp(1)))
+
+                                    putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the target DocCode")
+                                End If
                         End Select
                     End If
                 End If
@@ -144,7 +152,6 @@ Public Class frmMain
         If checkExists(file_pass, True) Then
             csvData.setPath = file_pass
 
-            sql.Clear()
             sql.Add("delete from SummaryData")
             If csvData.ProcUpdate(sql, count) Then
                 putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Success to initialize DB")
@@ -172,11 +179,8 @@ Public Class frmMain
 
         putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Search CSV File")
 
-        csvlist.Clear()
         If loginDir(env.csvDrive, env.csvPath, env.csvId, env.csvPass, msg) Then
             dirInfo = New IO.DirectoryInfo(env.csvPath)
-            allFile = Nothing
-
             allFile = dirInfo.GetFiles(env.csvFile, IO.SearchOption.AllDirectories)
             For Each f As IO.FileInfo In allFile
                 csvlist.Add(f.FullName)
@@ -205,6 +209,8 @@ Public Class frmMain
     Private Sub registDB(csvlist As List(Of String))
         Dim sRead As IO.StreamReader
         Dim strline As String
+        Dim outputFlg As String = ""
+        Dim newName As String = ""
         Dim strSql As New List(Of String)
         Dim index As Integer
         Dim msg As String = ""
@@ -221,7 +227,10 @@ Public Class frmMain
                         Exit Do
                     End If
 
-                    strSql.Add("insert into SummaryData values (" & strline & ", "" "", "" "")")
+                    outputFlg = ""
+                    newName = ""
+                    checkMigration(strline, outputFlg, newName)
+                    strSql.Add("insert into SummaryData values (" & strline & ", " & Chr(34) & outputFlg & Chr(34) & ", " & Chr(34) & newName & Chr(34) & ")")
                 Loop
             Next
 
@@ -244,4 +253,14 @@ Public Class frmMain
 
     End Sub
 
+    Private Sub checkMigration(str As String, ByRef outputFlg As String, ByRef newName As String)
+        Dim strTmp() As String
+        Dim docCode As String
+
+        strTmp = Split(str, ",")
+        docCode = strTmp(3).Replace(Chr(34), "")
+        If env.getTargetCode().IndexOf(docCode) <> -1 Then
+            outputFlg = "C"
+        End If
+    End Sub
 End Class

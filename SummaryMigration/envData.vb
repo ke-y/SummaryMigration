@@ -11,6 +11,7 @@ Friend Class envData
     Private _csvPass As String
     Private _csvFile As String
     Private _csvDrive As String
+    Private _targetCode As List(Of String)
 
     Friend Sub New()
         _appPath = "C:\SummaryMigration"
@@ -23,6 +24,7 @@ Friend Class envData
         _csvPass = ""
         _csvFile = "*.csv"
         _csvDrive = "S"
+        _targetCode = New List(Of String)
     End Sub
 
     ''' <summary>
@@ -139,5 +141,26 @@ Friend Class envData
             Return _csvDrive
         End Get
     End Property
+
+    ''' <summary>
+    ''' 移行対象の文書コードを設定
+    ''' </summary>
+    ''' <param name="str"></param>
+    Friend Sub setTargetCode(str As String)
+        Dim tmp() As String
+
+        tmp = Split(str, ",")
+        For i = 0 To tmp.Count - 1
+            _targetCode.Add(tmp(i))
+        Next
+    End Sub
+
+    ''' <summary>
+    ''' 移行対象の文書コードリストを取得
+    ''' </summary>
+    ''' <returns></returns>
+    Friend Function getTargetCode() As List(Of String)
+        Return _targetCode
+    End Function
 
 End Class
