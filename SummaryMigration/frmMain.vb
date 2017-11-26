@@ -35,6 +35,7 @@ Public Class frmMain
 
         If csvData.ProcSelect("select * from SummaryData", dtTbl) Then
             dataview.DataSource = dtTbl
+            dataview.ReadOnly = True
             btnMigration.Enabled = True
             status.Text = "Status:サマリ情報取得済み"
 
@@ -53,9 +54,8 @@ Public Class frmMain
 
         btnGetSummaryInfo.Enabled = False
 
-
-
-
+        'copySummaryFile()
+        'checkSummary()
 
         btnGetSummaryInfo.Enabled = True
         status.Text = "Status:サマリ移行完了"
@@ -233,13 +233,14 @@ Public Class frmMain
     End Function
 
     ''' <summary>
-    ''' CSVファイルの内容をDBに登録
+    ''' CSVファイルの内容を加工してDBに登録
     ''' </summary>
     ''' <param name="csvlist"></param>
     Private Sub registDB(csvlist As List(Of String))
         Dim sRead As IO.StreamReader
         Dim strline As String
         Dim outputFlg As String = ""
+        Dim newPatId As String = ""
         Dim newName As String = ""
         Dim strSql As New List(Of String)
         Dim index As Integer
@@ -258,9 +259,10 @@ Public Class frmMain
                     End If
 
                     outputFlg = " "
+                    newPatId = " "
                     newName = " "
-                    checkMigration(strline, outputFlg, newName)
-                    strSql.Add("insert into SummaryData values (" & strline & ", " & Chr(34) & outputFlg & Chr(34) & ", " & Chr(34) & newName & Chr(34) & ")")
+                    checkMigration(strline, outputFlg, newPatId, newName)
+                    strSql.Add("insert into SummaryData values (" & strline & ", " & Chr(34) & outputFlg & Chr(34) & ", " & Chr(34) & newPatId & Chr(34) & ", " & Chr(34) & newName & Chr(34) & ")")
                 Loop
             Next
 
@@ -288,12 +290,12 @@ Public Class frmMain
     ''' </summary>
     ''' <param name="strLine"></param>
     ''' <param name="outputFlg"></param>
+    ''' <param name="newPadId"></param>
     ''' <param name="newName"></param>
-    Private Sub checkMigration(strLine As String, ByRef outputFlg As String, ByRef newName As String)
+    Private Sub checkMigration(strLine As String, ByRef outputFlg As String, ByRef newPadId As String, ByRef newName As String)
         Dim strLineAttr() As String
         Dim strTmp() As String
         Dim docCode As String
-        Dim patId As String
         Dim docDate As String
         Dim orderNo As String
         Dim transactionDate As String
@@ -305,14 +307,15 @@ Public Class frmMain
             outputFlg = "C"
 
             strTmp = Split(strLineAttr(1), "_")
-            patId = "00" & strLineAttr(2).Replace(Chr(34), "")
+            newPadId = strLineAttr(2).Replace(Chr(34), "").PadLeft(env.pidLen, env.pidChr)
             docDate = strTmp(1)
             orderNo = strTmp(6).Replace(Chr(34), "").Replace(".PDF", "")
             transactionDate = strLineAttr(11).Replace(Chr(34), "")
             deptCode = strLineAttr(5).Replace(Chr(34), "")
 
-            newName = patId & "_" & docDate & "_SMR-02_" & orderNo & "_" & transactionDate & "_" & deptCode & "_1.pdf"
+            newName = newPadId & "_" & docDate & "_SMR-02_" & orderNo & "_" & transactionDate & "_" & deptCode & "_1.pdf"
         End If
     End Sub
+
 
 End Class

@@ -13,6 +13,8 @@ Friend Class envData
     Private _csvDrive As String
     Private _targetCode As List(Of String)
     Private _rootDir As String
+    Private _pidLen As Integer
+    Private _pidChr As Char
 
     Friend Sub New()
         _appPath = "C:\SummaryMigration"
@@ -27,6 +29,8 @@ Friend Class envData
         _csvDrive = "S"
         _targetCode = New List(Of String)
         _rootDir = "."
+        _pidLen = 10
+        _pidChr = "0"
     End Sub
 
     ''' <summary>
@@ -177,4 +181,25 @@ Friend Class envData
             Return _rootDir
         End Get
     End Property
+
+    ''' <summary>
+    ''' 移行後の患者ID桁数
+    ''' </summary>
+    ''' <returns></returns>
+    Friend ReadOnly Property pidLen() As Integer
+        Get
+            Return _pidLen
+        End Get
+    End Property
+
+    ''' <summary>
+    ''' 患者IDの桁埋め文字
+    ''' </summary>
+    ''' <returns></returns>
+    Friend ReadOnly Property pidChr() As Char
+        Get
+            Return _pidChr
+        End Get
+    End Property
+
 End Class
