@@ -55,7 +55,7 @@ Public Class frmMain
         btnGetSummaryInfo.Enabled = False
 
         'copySummaryFile()
-        'checkSummary()
+        'checkSummaryFile()
 
         btnGetSummaryInfo.Enabled = True
         status.Text = "Status:サマリ移行完了"
@@ -233,7 +233,7 @@ Public Class frmMain
     End Function
 
     ''' <summary>
-    ''' CSVファイルの内容を加工してDBに登録
+    ''' CSVファイルの内容をDBに登録
     ''' </summary>
     ''' <param name="csvlist"></param>
     Private Sub registDB(csvlist As List(Of String))
@@ -241,6 +241,7 @@ Public Class frmMain
         Dim strline As String
         Dim outputFlg As String = ""
         Dim newPatId As String = ""
+        Dim newFilePath As String = ""
         Dim newName As String = ""
         Dim strSql As New List(Of String)
         Dim index As Integer
@@ -260,9 +261,10 @@ Public Class frmMain
 
                     outputFlg = " "
                     newPatId = " "
+                    newFilePath = " "
                     newName = " "
-                    checkMigration(strline, outputFlg, newPatId, newName)
-                    strSql.Add("insert into SummaryData values (" & strline & ", " & Chr(34) & outputFlg & Chr(34) & ", " & Chr(34) & newPatId & Chr(34) & ", " & Chr(34) & newName & Chr(34) & ")")
+                    checkMigration(strline, outputFlg, newPatId, newFilePath, newName)
+                    strSql.Add("insert into SummaryData values (" & strline & ", " & Chr(34) & outputFlg & Chr(34) & ", " & Chr(34) & newPatId & Chr(34) & ", " & Chr(34) & newFilePath & Chr(34) & ", " & Chr(34) & newName & Chr(34) & ")")
                 Loop
             Next
 
@@ -286,13 +288,13 @@ Public Class frmMain
     End Sub
 
     ''' <summary>
-    ''' 移行対象ファイルかチェックして、新しいファイル名を付与
+    ''' 移行対象かチェックして、移行用のファイル情報を作成
     ''' </summary>
     ''' <param name="strLine"></param>
     ''' <param name="outputFlg"></param>
     ''' <param name="newPadId"></param>
     ''' <param name="newName"></param>
-    Private Sub checkMigration(strLine As String, ByRef outputFlg As String, ByRef newPadId As String, ByRef newName As String)
+    Private Sub checkMigration(strLine As String, ByRef outputFlg As String, ByRef newPadId As String, ByRef newFilePath As String, ByRef newName As String)
         Dim strLineAttr() As String
         Dim strTmp() As String
         Dim docCode As String
@@ -313,9 +315,9 @@ Public Class frmMain
             transactionDate = strLineAttr(11).Replace(Chr(34), "")
             deptCode = strLineAttr(5).Replace(Chr(34), "")
 
+            newFilePath = strMid(newPadId, 1, 3) & "\" & strMid(newPadId, 4, 3) & "\" & newPadId & "\" & docDate & "\SMR-02"
             newName = newPadId & "_" & docDate & "_SMR-02_" & orderNo & "_" & transactionDate & "_" & deptCode & "_1.pdf"
         End If
     End Sub
-
 
 End Class

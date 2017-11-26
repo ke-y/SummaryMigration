@@ -15,5 +15,6 @@ CREATE TABLE SummaryData (
        TotalPaneNo integer not null,
        OutputFlg   text not null,
 	   NewPatID    text not null,
+	   NewFilePath text not null,
        NewFileName text not null
        );

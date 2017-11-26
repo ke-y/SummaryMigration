@@ -131,6 +131,25 @@ Module Common
     End Function
 
     ''' <summary>
+    ''' 文字列から指定された範囲の文字を返す
+    ''' </summary>
+    ''' <param name="str">対象文字列</param>
+    ''' <param name="start">開始位置</param>
+    ''' <param name="count">文字数</param>
+    ''' <returns>文字列</returns>
+    Friend Function strMid(ByVal str As String, ByVal start As Integer, ByVal count As Integer) As String
+        If Trim(str) = "" Then
+            strMid = ""
+        ElseIf str.Length < count Then
+            strMid = ""
+        Else
+            strMid = str.Substring(start - 1, count)
+        End If
+
+        Return strMid
+    End Function
+
+    ''' <summary>
     ''' ログメッセージ出力
     ''' </summary>
     ''' <param name="pass">LOG出力先フォルダ</param>
