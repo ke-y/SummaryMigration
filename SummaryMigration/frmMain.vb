@@ -50,12 +50,16 @@ Public Class frmMain
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Private Sub btnMigration_Click(sender As Object, e As EventArgs) Handles btnMigration.Click
+        Dim copyNum As Integer = 0
+        Dim checkNum As Integer = 0
+
         putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "SummaryFile Migration Start")
 
         btnGetSummaryInfo.Enabled = False
+        status.Text = "Status:サマリ移行処理中"
 
-        'copySummaryFile()
-        'checkSummaryFile()
+        copyNum = copySummaryFile()
+        checkSummaryFile()
 
         btnGetSummaryInfo.Enabled = True
         status.Text = "Status:サマリ移行完了"
@@ -96,23 +100,23 @@ Public Class frmMain
                                 Else
                                     errList.Add(Trim(strLineAttr(1)) & "が存在しません")
                                 End If
-                            Case "CSV_PATH"
+                            Case "SUMMARY_PATH"
                                 If Trim(strLineAttr(1)) <> "" Then
-                                    env.csvPath = Trim(strLineAttr(1))
+                                    env.summaryPath = Trim(strLineAttr(1))
 
                                     putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the CSV input path")
                                 Else
                                     errList.Add("CSV_PATHが未指定です")
                                 End If
-                            Case "CSV_ID"
+                            Case "LOGIN_ID"
                                 If Trim(strLineAttr(1)) <> "" Then
-                                    env.csvId = Trim(strLineAttr(1))
+                                    env.loginId = Trim(strLineAttr(1))
 
                                     putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the CSV access ID")
                                 End If
-                            Case "CSV_PASS"
+                            Case "LOGIN_PASS"
                                 If Trim(strLineAttr(1)) <> "" Then
-                                    env.csvPass = Trim(strLineAttr(1))
+                                    env.loginPass = Trim(strLineAttr(1))
 
                                     putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the CSV access Pass")
                                 End If
@@ -122,13 +126,19 @@ Public Class frmMain
 
                                     putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the CSV file name pattern")
                                 End If
+                            Case "COPY_FILE"
+                                If Trim(strLineAttr(1)) <> "" Then
+                                    env.csvFile = Trim(strLineAttr(1))
+
+                                    putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the Copy file name pattern")
+                                End If
                             Case "TARGET"
                                 If Trim(strLineAttr(1)) <> "" Then
                                     env.setTargetCode(Trim(strLineAttr(1)))
 
                                     putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the Target DocCode")
                                 End If
-                            Case "ROOT"
+                            Case "ROOTDIR"
                                 If checkExists(Trim(strLineAttr(1)), False) Then
                                     env.rootDir = Trim(strLineAttr(1))
 
@@ -148,16 +158,16 @@ Public Class frmMain
             Close()
         End If
 
-        If loginDir(env.csvDrive, env.csvPath, env.csvId, env.csvPass, msg) Then
-            putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Access OK " & " [" & env.csvPath & "]")
+        If loginDir(env.summaryDrive, env.summaryPath, env.loginId, env.loginPass, msg) Then
+            putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Access OK " & " [" & env.summaryPath & "]")
 
-            If Not logoffDir(env.csvDrive, msg) Then
-                putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Network Dir logoff Error. Win32 API Error Code = " & msg & " [" & env.csvPath & "]")
+            If Not logoffDir(env.summaryDrive, msg) Then
+                putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Network Dir logoff Error. Win32 API Error Code = " & msg & " [" & env.summaryPath & "]")
             End If
         Else
-            errList.Add(env.csvPath & "にアクセスできません")
+            errList.Add(env.summaryPath & "にアクセスできません")
 
-            putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Network Dir login Error. Win32 API Error Code = " & msg & " [" & env.csvPath & "]")
+            putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Network Dir login Error. Win32 API Error Code = " & msg & " [" & env.summaryPath & "]")
         End If
 
         If errList.Count > 0 Then
@@ -209,8 +219,8 @@ Public Class frmMain
 
         putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Search CSV File")
 
-        If loginDir(env.csvDrive, env.csvPath, env.csvId, env.csvPass, msg) Then
-            dirInfo = New IO.DirectoryInfo(env.csvPath)
+        If loginDir(env.summaryDrive, env.summaryPath, env.loginId, env.loginPass, msg) Then
+            dirInfo = New IO.DirectoryInfo(env.summaryPath)
             allFile = dirInfo.GetFiles(env.csvFile, IO.SearchOption.AllDirectories)
             For Each f As IO.FileInfo In allFile
                 csvlist.Add(f.FullName)
@@ -222,11 +232,11 @@ Public Class frmMain
                 putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : CSV File is Not Found")
             End If
 
-            If Not logoffDir(env.csvDrive, msg) Then
-                putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Network Dir logoff Error. Win32 API Error Code = " & msg & " [" & env.csvPath & "]")
+            If Not logoffDir(env.summaryDrive, msg) Then
+                putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Network Dir logoff Error. Win32 API Error Code = " & msg & " [" & env.summaryPath & "]")
             End If
         Else
-            putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Network Dir login Error. Win32 API Error Code = " & msg & " [" & env.csvPath & "]")
+            putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Network Dir login Error. Win32 API Error Code = " & msg & " [" & env.summaryPath & "]")
         End If
 
         Return csvlist
@@ -249,7 +259,7 @@ Public Class frmMain
 
         putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Regist File Data with DB")
 
-        If loginDir(env.csvDrive, env.csvPath, env.csvId, env.csvPass, msg) Then
+        If loginDir(env.summaryDrive, env.summaryPath, env.loginId, env.loginPass, msg) Then
             For index = 0 To csvlist.Count - 1
                 sRead = New IO.StreamReader(csvlist(index), System.Text.Encoding.GetEncoding("Shift_JIS"))
 
@@ -278,11 +288,11 @@ Public Class frmMain
                 putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Data is not Found")
             End If
 
-            If Not logoffDir(env.csvDrive, msg) Then
-                putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Network Dir logoff Error. Win32 API Error Code = " & msg & " [" & env.csvPath & "]")
+            If Not logoffDir(env.summaryDrive, msg) Then
+                putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Network Dir logoff Error. Win32 API Error Code = " & msg & " [" & env.summaryPath & "]")
             End If
         Else
-            putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Network Dir login Error. Win32 API Error Code = " & msg & " [" & env.csvPath & "]")
+            putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Network Dir login Error. Win32 API Error Code = " & msg & " [" & env.summaryPath & "]")
         End If
 
     End Sub
@@ -320,4 +330,64 @@ Public Class frmMain
         End If
     End Sub
 
+    ''' <summary>
+    ''' PDFファイルをコピーする
+    ''' </summary>
+    ''' <returns></returns>
+    Private Function copySummaryFile() As Integer
+        Dim dirInfo As IO.DirectoryInfo
+        Dim allFile As IO.FileInfo()
+        Dim dtTbl As New DataTable
+        Dim dataDir As String = ""
+        Dim count As Integer = 0
+        Dim msg As String = ""
+
+        putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Start SummaryFile Copy")
+
+        If loginDir(env.summaryDrive, env.summaryPath, env.loginId, env.loginPass, msg) Then
+            If csvData.ProcSelect("select * from SummaryData where outputFlg = 'C'", dtTbl) Then
+                dirInfo = New IO.DirectoryInfo(env.summaryPath)
+                allFile = dirInfo.GetFiles(env.copyFile, IO.SearchOption.AllDirectories)
+
+                For Each tblData As DataRow In dtTbl.Rows
+                    dataDir = env.rootDir & "\" & tblData("NewFilePath").ToString
+                    If Not checkExists(dataDir, False) Then
+                        IO.Directory.CreateDirectory(dataDir)
+                    End If
+
+                    Try
+                        For Each f As IO.FileInfo In allFile
+                            If tblData("DocID").ToString = f.Name Then
+                                IO.File.Copy(f.FullName, dataDir & "\" & tblData("NewFileName").ToString, True)
+
+                                count = count + 1
+                                If (count Mod 100) = 0 Then
+                                    putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  SummaryFile = " & count)
+                                End If
+                                Exit For
+                            End If
+                        Next
+                    Catch ex As IO.FileNotFoundException
+                        putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : File is not Found [" & env.summaryPath & "\" & tblData("DocID").ToString & "]")
+                    Catch ex As UnauthorizedAccessException
+                        putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : File is not Overwrite [" & dataDir & "\" & tblData("NewFileName").ToString & "]")
+                    Catch ex As Exception
+                        putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Unknown Error [Original=" & tblData("DocID").ToString & " , CopyTo=" & tblData("NewFileName").ToString & "]")
+                    End Try
+                Next
+
+                putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  End SummaryFile Copy = " & count)
+            Else
+                putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : SQL Select Error")
+            End If
+        Else
+            putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Network Dir login Error. Win32 API Error Code = " & msg & " [" & env.summaryPath & "]")
+        End If
+
+        Return count
+    End Function
+
+    Private Sub checkSummaryFile()
+
+    End Sub
 End Class
