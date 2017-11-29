@@ -6,11 +6,12 @@ Friend Class envData
     Private _appLog As String
     Private _dbPath As String
     Private _editorPath As String
-    Private _csvPath As String
-    Private _csvId As String
-    Private _csvPass As String
+    Private _summaryPath As String
+    Private _loginId As String
+    Private _loginPass As String
     Private _csvFile As String
-    Private _csvDrive As String
+    Private _copyFile As String
+    Private _summaryDrive As String
     Private _targetCode As List(Of String)
     Private _rootDir As String
     Private _pidLen As Integer
@@ -22,11 +23,12 @@ Friend Class envData
         _appLog = "\log"
         _dbPath = "\conf\SummaryData.sqlite"
         _editorPath = "C:\Windows\System32\notepad.exe"
-        _csvPath = ""
-        _csvId = ""
-        _csvPass = ""
+        _summaryPath = ""
+        _loginId = ""
+        _loginPass = ""
         _csvFile = "*.csv"
-        _csvDrive = "S"
+        _copyFile = "*.pdf"
+        _summaryDrive = "S"
         _targetCode = New List(Of String)
         _rootDir = "."
         _pidLen = 10
@@ -90,12 +92,12 @@ Friend Class envData
     ''' CSVファイル格納先
     ''' </summary>
     ''' <returns></returns>
-    Friend Property csvPath() As String
+    Friend Property summaryPath() As String
         Set(ByVal value As String)
-            _csvPath = value
+            _summaryPath = value
         End Set
         Get
-            Return _csvPath
+            Return _summaryPath
         End Get
     End Property
 
@@ -103,12 +105,12 @@ Friend Class envData
     ''' CSVファイル格納先アクセスID
     ''' </summary>
     ''' <returns></returns>
-    Friend Property csvId() As String
+    Friend Property loginId() As String
         Set(ByVal value As String)
-            _csvId = value
+            _loginId = value
         End Set
         Get
-            Return _csvId
+            Return _loginId
         End Get
     End Property
 
@@ -116,12 +118,12 @@ Friend Class envData
     ''' CSVファイル格納先アクセスパスワード
     ''' </summary>
     ''' <returns></returns>
-    Friend Property csvPass() As String
+    Friend Property loginPass() As String
         Set(ByVal value As String)
-            _csvPass = value
+            _loginPass = value
         End Set
         Get
-            Return _csvPass
+            Return _loginPass
         End Get
     End Property
 
@@ -139,12 +141,25 @@ Friend Class envData
     End Property
 
     ''' <summary>
+    ''' コピー対象のファイル名規約
+    ''' </summary>
+    ''' <returns></returns>
+    Friend Property copyFile() As String
+        Set(ByVal value As String)
+            _copyFile = value
+        End Set
+        Get
+            Return _copyFile
+        End Get
+    End Property
+
+    ''' <summary>
     ''' NWドライブ名
     ''' </summary>
     ''' <returns></returns>
-    Friend ReadOnly Property csvDrive() As String
+    Friend ReadOnly Property summaryDrive() As String
         Get
-            Return _csvDrive
+            Return _summaryDrive
         End Get
     End Property
 
