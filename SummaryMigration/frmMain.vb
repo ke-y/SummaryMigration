@@ -52,6 +52,7 @@ Public Class frmMain
     Private Sub btnMigration_Click(sender As Object, e As EventArgs) Handles btnMigration.Click
         Dim copyNum As Integer = 0
         Dim checkNum As Integer = 0
+        Dim dtTbl As New DataTable
 
         putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "SummaryFile Migration Start")
 
@@ -59,10 +60,15 @@ Public Class frmMain
         status.Text = "Status:サマリ移行処理中"
 
         copyNum = copySummaryFile()
-        checkSummaryFile()
+        checkNum = checkSummaryFile()
+
+        If csvData.ProcSelect("select * from SummaryData", dtTbl) Then
+            dataview.DataSource = Nothing
+            dataview.DataSource = dtTbl
+        End If
 
         btnGetSummaryInfo.Enabled = True
-        status.Text = "Status:サマリ移行完了"
+        status.Text = "Status:サマリ移行完了  処理件数=" & checkNum & "件　エラー件数=" & copyNum - checkNum & "件"
     End Sub
 
     ''' <summary>
@@ -128,7 +134,7 @@ Public Class frmMain
                                 End If
                             Case "COPY_FILE"
                                 If Trim(strLineAttr(1)) <> "" Then
-                                    env.csvFile = Trim(strLineAttr(1))
+                                    env.copyFile = Trim(strLineAttr(1))
 
                                     putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the Copy file name pattern")
                                 End If
@@ -376,7 +382,7 @@ Public Class frmMain
                     End Try
                 Next
 
-                putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  End SummaryFile Copy = " & count)
+                putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Total Copy SummaryFile = " & count)
             Else
                 putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : SQL Select Error")
             End If
@@ -387,7 +393,37 @@ Public Class frmMain
         Return count
     End Function
 
-    Private Sub checkSummaryFile()
+    ''' <summary>
+    ''' コピーされているかチェックしてDBを更新
+    ''' </summary>
+    ''' <returns></returns>
+    Private Function checkSummaryFile() As Integer
+        Dim dtTbl As New DataTable
+        Dim strSql As New List(Of String)
+        Dim count As Integer = 0
 
-    End Sub
+        putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "SummaryFile Existence Check")
+
+        If csvData.ProcSelect("select * from SummaryData where outputFlg = 'C'", dtTbl) Then
+            For Each tblData As DataRow In dtTbl.Rows
+                If checkExists(env.rootDir & "\" & tblData("NewFilePath").ToString & "\" & tblData("NewFileName").ToString, True) Then
+                    strSql.Add("update SummaryData set OutputFlg = 'U' where NewFilePath = '" & tblData("NewFilePath").ToString & "' and NewFileName = '" & tblData("NewFileName").ToString & "';")
+                End If
+            Next
+
+            If strSql.Count > 0 Then
+                If csvData.ProcUpdate(strSql, count) Then
+                    putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Check data = " & count)
+                Else
+                    putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Failed to update DB")
+                End If
+            Else
+                putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Data is not Found")
+            End If
+        Else
+            putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : SQL Select Error")
+        End If
+
+        Return count
+    End Function
 End Class
