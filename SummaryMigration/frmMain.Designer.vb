@@ -62,10 +62,10 @@ Partial Class frmMain
         'status
         '
         Me.status.AutoSize = True
-        Me.status.Font = New System.Drawing.Font("MS UI Gothic", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
+        Me.status.Font = New System.Drawing.Font("MS UI Gothic", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
         Me.status.Location = New System.Drawing.Point(289, 15)
         Me.status.Name = "status"
-        Me.status.Size = New System.Drawing.Size(60, 19)
+        Me.status.Size = New System.Drawing.Size(50, 16)
         Me.status.TabIndex = 3
         Me.status.Text = "status"
         '

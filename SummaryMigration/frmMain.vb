@@ -37,7 +37,7 @@ Public Class frmMain
             dataview.DataSource = dtTbl
             dataview.ReadOnly = True
             btnMigration.Enabled = True
-            status.Text = "Status:サマリ情報取得済み"
+            status.Text = "Status:サマリ情報取得済み　テーブル件数=" & dtTbl.Rows.Count
 
             putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Display DB Insert Result")
         End If
@@ -68,7 +68,7 @@ Public Class frmMain
         End If
 
         btnGetSummaryInfo.Enabled = True
-        status.Text = "Status:サマリ移行完了  処理件数=" & checkNum & "件　エラー件数=" & copyNum - checkNum & "件"
+        status.Text = "Status:サマリ移行完了  テーブル件数=" & dtTbl.Rows.Count & "　移行件数=" & checkNum & "件　エラー件数=" & copyNum - checkNum & "件"
     End Sub
 
     ''' <summary>
