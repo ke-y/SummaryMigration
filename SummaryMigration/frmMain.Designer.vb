@@ -27,6 +27,7 @@ Partial Class frmMain
         Me.btnMigration = New System.Windows.Forms.Button()
         Me.status = New System.Windows.Forms.Label()
         Me.btnExit = New System.Windows.Forms.Button()
+        Me.btnOutput = New System.Windows.Forms.Button()
         CType(Me.dataview, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -51,8 +52,8 @@ Partial Class frmMain
         '
         'btnMigration
         '
-        Me.btnMigration.BackColor = System.Drawing.SystemColors.ButtonFace
-        Me.btnMigration.Location = New System.Drawing.Point(146, 12)
+        Me.btnMigration.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(192, Byte), Integer))
+        Me.btnMigration.Location = New System.Drawing.Point(262, 12)
         Me.btnMigration.Name = "btnMigration"
         Me.btnMigration.Size = New System.Drawing.Size(119, 30)
         Me.btnMigration.TabIndex = 2
@@ -63,7 +64,7 @@ Partial Class frmMain
         '
         Me.status.AutoSize = True
         Me.status.Font = New System.Drawing.Font("MS UI Gothic", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
-        Me.status.Location = New System.Drawing.Point(289, 15)
+        Me.status.Location = New System.Drawing.Point(401, 17)
         Me.status.Name = "status"
         Me.status.Size = New System.Drawing.Size(50, 16)
         Me.status.TabIndex = 3
@@ -79,22 +80,30 @@ Partial Class frmMain
         Me.btnExit.Text = "終了"
         Me.btnExit.UseVisualStyleBackColor = False
         '
+        'btnOutput
+        '
+        Me.btnOutput.BackColor = System.Drawing.SystemColors.ButtonFace
+        Me.btnOutput.Location = New System.Drawing.Point(137, 12)
+        Me.btnOutput.Name = "btnOutput"
+        Me.btnOutput.Size = New System.Drawing.Size(119, 30)
+        Me.btnOutput.TabIndex = 5
+        Me.btnOutput.Text = "ファイル出力"
+        Me.btnOutput.UseVisualStyleBackColor = False
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(186, Byte), Integer), CType(CType(211, Byte), Integer), CType(CType(243, Byte), Integer))
-        Me.ClientSize = New System.Drawing.Size(1121, 569)
-        Me.ControlBox = False
+        Me.ClientSize = New System.Drawing.Size(1117, 565)
+        Me.Controls.Add(Me.btnOutput)
         Me.Controls.Add(Me.btnExit)
         Me.Controls.Add(Me.status)
         Me.Controls.Add(Me.btnMigration)
         Me.Controls.Add(Me.dataview)
         Me.Controls.Add(Me.btnGetSummaryInfo)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
-        Me.MaximizeBox = False
         Me.Name = "frmMain"
-        Me.ShowIcon = False
         CType(Me.dataview, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -106,4 +115,5 @@ Partial Class frmMain
     Friend WithEvents btnMigration As Button
     Friend WithEvents status As Label
     Friend WithEvents btnExit As Button
+    Friend WithEvents btnOutput As Button
 End Class

@@ -3,6 +3,7 @@
 Public Class frmMain
     Private env As New envData
     Private csvData As New dbConnect
+    Private sfd As New SaveFileDialog
 
     ''' <summary>
     ''' 起動時処理
@@ -13,9 +14,14 @@ Public Class frmMain
         putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "===== Start System =====")
 
         Text = Application.ProductName & " - MAIN"
+        ControlBox = False
+        dataview.AllowUserToAddRows = False
+        dataview.ReadOnly = True
 
         readIni()
         initializeDB()
+
+        btnOutput.Enabled = False
         btnMigration.Enabled = False
         status.Text = "Status:未実行"
 
@@ -35,12 +41,40 @@ Public Class frmMain
 
         If csvData.ProcSelect("select * from SummaryData", dtTbl) Then
             dataview.DataSource = dtTbl
-            dataview.ReadOnly = True
+
+            btnOutput.Enabled = True
             btnMigration.Enabled = True
             status.Text = "Status:サマリ情報取得済み　テーブル件数=" & dtTbl.Rows.Count
 
             putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Display DB Insert Result")
         End If
+
+    End Sub
+
+    ''' <summary>
+    ''' 表示内容をCSV出力
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub btnOutput_Click(sender As Object, e As EventArgs) Handles btnOutput.Click
+        Dim file_pass As String = ""
+
+        putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Save table data in CSV ")
+
+        btnGetSummaryInfo.Enabled = False
+        btnOutput.Enabled = False
+        btnMigration.Enabled = False
+
+        sfd.Filter = "CSVファイル | *.csv"
+        If saveCsv(dataview, file_pass) Then
+            putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  output CSV = [" & file_pass & "]")
+        Else
+            putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Failed to output CSV")
+        End If
+
+        btnGetSummaryInfo.Enabled = True
+        btnOutput.Enabled = True
+        btnMigration.Enabled = True
 
     End Sub
 
@@ -57,6 +91,7 @@ Public Class frmMain
         putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "SummaryFile Migration Start")
 
         btnGetSummaryInfo.Enabled = False
+        btnOutput.Enabled = False
         status.Text = "Status:サマリ移行処理中"
 
         copyNum = copySummaryFile()
@@ -68,6 +103,7 @@ Public Class frmMain
         End If
 
         btnGetSummaryInfo.Enabled = True
+        btnOutput.Enabled = True
         status.Text = "Status:サマリ移行完了  テーブル件数=" & dtTbl.Rows.Count & "　移行件数=" & checkNum & "件　エラー件数=" & copyNum - checkNum & "件"
     End Sub
 
@@ -88,8 +124,8 @@ Public Class frmMain
     Private Sub readIni()
         Dim errList As New List(Of String)
         Dim sRead As IO.StreamReader
-        Dim file_pass As String
-        Dim strLine As String
+        Dim file_pass As String = ""
+        Dim strLine As String = ""
         Dim strLineAttr() As String
         Dim msg As String = ""
 
@@ -201,7 +237,7 @@ Public Class frmMain
     Private Sub initializeDB()
         Dim file_pass As String
         Dim sql As New List(Of String)
-        Dim count As Integer
+        Dim count As Integer = 0
 
         putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Initialize DB")
 
@@ -271,7 +307,7 @@ Public Class frmMain
         Dim newFilePath As String = ""
         Dim newName As String = ""
         Dim strSql As New List(Of String)
-        Dim index As Integer
+        Dim index As Integer = 0
         Dim msg As String = ""
 
         putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Regist File Data with DB")
@@ -324,11 +360,11 @@ Public Class frmMain
     Private Sub checkMigration(strLine As String, ByRef outputFlg As String, ByRef newPadId As String, ByRef newFilePath As String, ByRef newName As String)
         Dim strLineAttr() As String
         Dim strTmp() As String
-        Dim docCode As String
-        Dim docDate As String
-        Dim orderNo As String
-        Dim transactionDate As String
-        Dim deptCode As String
+        Dim docCode As String = ""
+        Dim docDate As String = ""
+        Dim orderNo As String = ""
+        Dim transactionDate As String = ""
+        Dim deptCode As String = ""
 
         strLineAttr = Split(strLine, ",")
         docCode = strLineAttr(3).Replace(Chr(34), "")
@@ -436,6 +472,60 @@ Public Class frmMain
         End If
 
         Return count
+    End Function
+
+    ''' <summary>
+    ''' データグリッドビューの内容をファイル出力
+    ''' </summary>
+    ''' <param name="dataview"></param>
+    ''' <param name="file_pass"></param>
+    ''' <returns></returns>
+    Private Function saveCsv(dataview As DataGridView, ByRef file_pass As String) As Boolean
+        Dim ret As Boolean = False
+        Dim fileName As String = ""
+        Dim result As New System.Text.StringBuilder
+        Dim sWrite As IO.StreamWriter
+        Dim i As Integer = 0
+        Dim j As Integer = 0
+
+        If dataview.Rows.Count = 0 Then
+            Return ret
+        End If
+
+        If sfd.ShowDialog = Windows.Forms.DialogResult.OK Then
+            For i = 0 To dataview.Columns.Count - 1
+                Select Case i
+                    Case 0
+                        result.Append("""" & dataview.Columns(i).HeaderText.ToString & """")
+                    Case dataview.Columns.Count - 1
+                        result.Append("," & """" & dataview.Columns(i).HeaderText.ToString & """" & vbCrLf)
+                    Case Else
+                        result.Append("," & """" & dataview.Columns(i).HeaderText.ToString & """")
+                End Select
+            Next
+
+            For i = 0 To dataview.Rows.Count - 1
+                For j = 0 To dataview.Columns.Count - 1
+                    Select Case j
+                        Case 0
+                            result.Append("""" & dataview.Rows(i).Cells(j).Value.ToString & """")
+                        Case dataview.Columns.Count - 1
+                            result.Append("," & """" & dataview.Rows(i).Cells(j).Value.ToString & """" & vbCrLf)
+                        Case Else
+                            result.Append("," & """" & dataview.Rows(i).Cells(j).Value.ToString & """")
+                    End Select
+                Next
+            Next
+
+            fileName = sfd.FileName
+            sWrite = New IO.StreamWriter(fileName, False, System.Text.Encoding.GetEncoding("Shift_JIS"))
+            sWrite.WriteLine(result)
+            sWrite.Close()
+
+            ret = True
+        End If
+
+        Return ret
     End Function
 
 End Class
