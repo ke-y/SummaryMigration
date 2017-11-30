@@ -72,6 +72,17 @@ Public Class frmMain
     End Sub
 
     ''' <summary>
+    ''' 終了
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub btnExit_Click(sender As Object, e As EventArgs) Handles btnExit.Click
+        putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "===== End System =====")
+
+        Close()
+    End Sub
+
+    ''' <summary>
     ''' iniファイルを読み込む
     ''' </summary>
     Private Sub readIni()
@@ -426,4 +437,5 @@ Public Class frmMain
 
         Return count
     End Function
+
 End Class
