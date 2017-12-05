@@ -16,6 +16,7 @@ Friend Class envData
     Private _fromDay As String
     Private _toDay As String
     Private _rootDir As String
+    Private _newDocCode As String
     Private _pidLen As Integer
     Private _pidChr As Char
 
@@ -35,6 +36,7 @@ Friend Class envData
         _fromDay = "20010101"
         _toDay = "29991231"
         _rootDir = "."
+        _newDocCode = "SMR-99"
         _pidLen = 10
         _pidChr = "0"
     End Sub
@@ -224,6 +226,19 @@ Friend Class envData
         End Set
         Get
             Return _rootDir
+        End Get
+    End Property
+
+    ''' <summary>
+    ''' 移行後の文書コード
+    ''' </summary>
+    ''' <returns></returns>
+    Friend Property newDocCode As String
+        Set(value As String)
+            _newDocCode = value
+        End Set
+        Get
+            Return _newDocCode
         End Get
     End Property
 

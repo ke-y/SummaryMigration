@@ -192,16 +192,16 @@ Public Class frmMain
                                     putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the Target DocCode")
                                 End If
                             Case "FROM"
-                                If Trim(strLineAttr(1)) <> "" Then
+                                If Trim(strLineAttr(1)) <> "" And checkFormat(Trim(strLineAttr(1)), "\d{8}") Then
                                     env.fromDay = Trim(strLineAttr(1))
 
-                                    putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the search start day")
+                                    putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the Search Start day")
                                 End If
                             Case "TO"
-                                If Trim(strLineAttr(1)) <> "" Then
+                                If Trim(strLineAttr(1)) <> "" And checkFormat(Trim(strLineAttr(1)), "\d{8}") Then
                                     env.toDay = Trim(strLineAttr(1))
 
-                                    putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the search end day")
+                                    putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the Search End day")
                                 End If
                             Case "ROOTDIR"
                                 If checkExists(Trim(strLineAttr(1)), False) Then
@@ -210,6 +210,12 @@ Public Class frmMain
                                     putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the Root Directory")
                                 Else
                                     errList.Add(Trim(strLineAttr(1)) & "が存在しません")
+                                End If
+                            Case "DOCCODE"
+                                If Trim(strLineAttr(1)) <> "" Then
+                                    env.newDocCode = Trim(strLineAttr(1))
+
+                                    putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the New DocCode")
                                 End If
                         End Select
                     End If
@@ -395,8 +401,8 @@ Public Class frmMain
                         deptCode = strLineAttr(5).Replace(Chr(34), "")
                         outputFlg = "C"
 
-                        newFilePath = strMid(newPadId, 1, 3) & "\" & strMid(newPadId, 4, 3) & "\" & newPadId & "\" & docDate & "\SMR-11"
-                        newName = newPadId & "_" & docDate & "_SMR-11_" & orderNo & "_" & transactionDate & "_" & deptCode & "_1.pdf"
+                        newFilePath = strMid(newPadId, 1, 3) & "\" & strMid(newPadId, 4, 3) & "\" & newPadId & "\" & docDate & "\" & env.newDocCode
+                        newName = newPadId & "_" & docDate & "_" & env.newDocCode & "_" & orderNo & "_" & transactionDate & "_" & deptCode & "_1.pdf"
                     End If
                 End If
             Catch ex As Exception

@@ -173,4 +173,21 @@ Module Common
         sWrite.Close()
     End Sub
 
+    ''' <summary>
+    ''' 入力形式のチェック
+    ''' </summary>
+    ''' <param name="str">文字列</param>
+    ''' <param name="fmt">入力内容(正規表現)</param>
+    Friend Function checkFormat(str As String, fmt As String) As Boolean
+        Dim regex As Text.RegularExpressions.Regex
+        Dim ret As Boolean = False
+
+        regex = New Text.RegularExpressions.Regex(fmt)
+        If str <> "" And regex.IsMatch(str) Then
+            ret = True
+        End If
+
+        Return ret
+    End Function
+
 End Module
