@@ -13,6 +13,8 @@ Friend Class envData
     Private _copyFile As String
     Private _summaryDrive As String
     Private _targetCode As List(Of String)
+    Private _fromDay As String
+    Private _toDay As String
     Private _rootDir As String
     Private _pidLen As Integer
     Private _pidChr As Char
@@ -30,6 +32,8 @@ Friend Class envData
         _copyFile = "*.pdf"
         _summaryDrive = "S"
         _targetCode = New List(Of String)
+        _fromDay = "20010101"
+        _toDay = "29991231"
         _rootDir = "."
         _pidLen = 10
         _pidChr = "0"
@@ -183,6 +187,32 @@ Friend Class envData
     Friend Function getTargetCode() As List(Of String)
         Return _targetCode
     End Function
+
+    ''' <summary>
+    ''' 移行対象開始日
+    ''' </summary>
+    ''' <returns></returns>
+    Friend Property fromDay As String
+        Set(value As String)
+            _fromDay = value
+        End Set
+        Get
+            Return _fromDay
+        End Get
+    End Property
+
+    ''' <summary>
+    ''' 移行対象終了日
+    ''' </summary>
+    ''' <returns></returns>
+    Friend Property toDay As String
+        Set(value As String)
+            _toDay = value
+        End Set
+        Get
+            Return _toDay
+        End Get
+    End Property
 
     ''' <summary>
     ''' 移行先ルートディレクトリ

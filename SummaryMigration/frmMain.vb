@@ -191,6 +191,18 @@ Public Class frmMain
 
                                     putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the Target DocCode")
                                 End If
+                            Case "FROM"
+                                If Trim(strLineAttr(1)) <> "" Then
+                                    env.fromDay = Trim(strLineAttr(1))
+
+                                    putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the search start day")
+                                End If
+                            Case "TO"
+                                If Trim(strLineAttr(1)) <> "" Then
+                                    env.toDay = Trim(strLineAttr(1))
+
+                                    putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the search end day")
+                                End If
                             Case "ROOTDIR"
                                 If checkExists(Trim(strLineAttr(1)), False) Then
                                     env.rootDir = Trim(strLineAttr(1))
@@ -327,7 +339,9 @@ Public Class frmMain
                     newFilePath = " "
                     newName = " "
                     checkMigration(strline, outputFlg, newPatId, newFilePath, newName)
-                    strSql.Add("insert into SummaryData values (" & strline & ", " & Chr(34) & outputFlg & Chr(34) & ", " & Chr(34) & newPatId & Chr(34) & ", " & Chr(34) & newFilePath & Chr(34) & ", " & Chr(34) & newName & Chr(34) & ")")
+                    If outputFlg = "C" Then
+                        strSql.Add("insert into SummaryData values (" & strline & ", " & Chr(34) & outputFlg & Chr(34) & ", " & Chr(34) & newPatId & Chr(34) & ", " & Chr(34) & newFilePath & Chr(34) & ", " & Chr(34) & newName & Chr(34) & ")")
+                    End If
                 Loop
             Next
 
@@ -369,17 +383,25 @@ Public Class frmMain
         strLineAttr = Split(strLine, ",")
         docCode = strLineAttr(3).Replace(Chr(34), "")
         If env.getTargetCode().IndexOf(docCode) <> -1 Then
-            outputFlg = "C"
-
             strTmp = Split(strLineAttr(1), "_")
-            newPadId = strLineAttr(2).Replace(Chr(34), "").PadLeft(env.pidLen, env.pidChr)
             docDate = strTmp(1)
-            orderNo = strTmp(6).Replace(Chr(34), "").Replace(".PDF", "")
-            transactionDate = strLineAttr(11).Replace(Chr(34), "")
-            deptCode = strLineAttr(5).Replace(Chr(34), "")
 
-            newFilePath = strMid(newPadId, 1, 3) & "\" & strMid(newPadId, 4, 3) & "\" & newPadId & "\" & docDate & "\SMR-02"
-            newName = newPadId & "_" & docDate & "_SMR-02_" & orderNo & "_" & transactionDate & "_" & deptCode & "_1.pdf"
+            Try
+                If Integer.Parse(docDate) >= Integer.Parse(env.fromDay) Then
+                    If Integer.Parse(docDate) <= Integer.Parse(env.toDay) Then
+                        newPadId = strLineAttr(2).Replace(Chr(34), "").PadLeft(env.pidLen, env.pidChr)
+                        orderNo = strTmp(6).Replace(Chr(34), "").Replace(".PDF", "")
+                        transactionDate = strLineAttr(11).Replace(Chr(34), "")
+                        deptCode = strLineAttr(5).Replace(Chr(34), "")
+                        outputFlg = "C"
+
+                        newFilePath = strMid(newPadId, 1, 3) & "\" & strMid(newPadId, 4, 3) & "\" & newPadId & "\" & docDate & "\SMR-11"
+                        newName = newPadId & "_" & docDate & "_SMR-11_" & orderNo & "_" & transactionDate & "_" & deptCode & "_1.pdf"
+                    End If
+                End If
+            Catch ex As Exception
+                outputFlg = ""
+            End Try
         End If
     End Sub
 
