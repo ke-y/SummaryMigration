@@ -1,11 +1,11 @@
 =============================
-  SummaryMigration  Ver 1.0
+  SummaryMigration  Ver 1.1
 =============================
 [Name]
 SummaryMigration.exe
 
 [Version]
-1.0
+1.1
 
 [Overview]
 文書データ移行ツール
@@ -25,5 +25,8 @@ Cドライブ直下に「SummaryMigration」フォルダごと格納
 （レジストリ等は変更していない）
 
 [CHANGE LOG]
-0.1：2017/11/30
+1.2：2017/12/10
+抽出範囲指定、一覧出力機能 追加
+
+1.0：2017/11/30
 初版作成
