@@ -449,7 +449,7 @@ Public Class frmMain
                             End If
                         Next
                     Catch ex As IO.FileNotFoundException
-                        putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : File is not Found [" & env.summaryPath & "\" & tblData("DocID").ToString & "]")
+                        putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Base File is not Found [" & env.summaryPath & "\" & tblData("DocID").ToString & "]")
                     Catch ex As UnauthorizedAccessException
                         putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : File is not Overwrite [" & dataDir & "\" & tblData("NewFileName").ToString & "]")
                     Catch ex As Exception

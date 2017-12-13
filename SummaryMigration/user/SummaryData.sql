@@ -16,5 +16,6 @@ CREATE TABLE SummaryData (
        OutputFlg   text not null,
 	   NewPatID    text not null,
 	   NewFilePath text not null,
-       NewFileName text not null
+       NewFileName text not null,
+	   primary key(FilePath, DocID)
        );
