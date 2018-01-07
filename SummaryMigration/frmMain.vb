@@ -159,7 +159,7 @@ Public Class frmMain
 
                                     putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the CSV input path")
                                 Else
-                                    errList.Add("CSV_PATHが未指定です")
+                                    errList.Add("SUMMARY_PATHが未指定です")
                                 End If
                             Case "LOGIN_ID"
                                 If Trim(strLineAttr(1)) <> "" Then
@@ -204,12 +204,16 @@ Public Class frmMain
                                     putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the Search End day")
                                 End If
                             Case "ROOTDIR"
-                                If checkExists(Trim(strLineAttr(1)), False) Then
-                                    env.rootDir = Trim(strLineAttr(1))
+                                If Trim(strLineAttr(1)) <> "" Then
+                                    If checkExists(Trim(strLineAttr(1)), False) Then
+                                        env.rootDir = Trim(strLineAttr(1))
 
-                                    putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the Root Directory")
+                                        putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Set the Root Directory")
+                                    Else
+                                        errList.Add(Trim(strLineAttr(1)) & "が存在しません")
+                                    End If
                                 Else
-                                    errList.Add(Trim(strLineAttr(1)) & "が存在しません")
+                                    errList.Add("ROOTDIRが未指定です")
                                 End If
                             Case "DOCCODE"
                                 If Trim(strLineAttr(1)) <> "" Then
@@ -229,16 +233,18 @@ Public Class frmMain
             Close()
         End If
 
-        If loginDir(env.summaryDrive, env.summaryPath, env.loginId, env.loginPass, msg) Then
-            putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Access OK " & " [" & env.summaryPath & "]")
+        If env.summaryPath <> "" Then
+            If loginDir(env.summaryDrive, env.summaryPath, env.loginId, env.loginPass, msg) Then
+                putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Access OK " & " [" & env.summaryPath & "]")
 
-            If Not logoffDir(env.summaryDrive, msg) Then
-                putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Network Dir logoff Error. Win32 API Error Code = " & msg & " [" & env.summaryPath & "]")
+                If Not logoffDir(env.summaryDrive, msg) Then
+                    putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Network Dir logoff Error. Win32 API Error Code = " & msg & " [" & env.summaryPath & "]")
+                End If
+            Else
+                errList.Add(env.summaryPath & "にアクセスできません")
+
+                putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Network Dir login Error. Win32 API Error Code = " & msg & " [" & env.summaryPath & "]")
             End If
-        Else
-            errList.Add(env.summaryPath & "にアクセスできません")
-
-            putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Network Dir login Error. Win32 API Error Code = " & msg & " [" & env.summaryPath & "]")
         End If
 
         If errList.Count > 0 Then

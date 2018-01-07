@@ -33,7 +33,7 @@ Friend Class envData
         _copyFile = "*.pdf"
         _summaryDrive = "S"
         _targetCode = New List(Of String)
-        _fromDay = "20010101"
+        _fromDay = "20000101"
         _toDay = "29991231"
         _rootDir = "."
         _newDocCode = "SMR-99"
