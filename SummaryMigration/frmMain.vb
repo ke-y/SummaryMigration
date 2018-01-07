@@ -112,7 +112,7 @@ Public Class frmMain
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
-    Private Sub btnOpenIni_Click(sender As Object, e As EventArgs) Handles btnOpenIni.Click
+    Private Sub menuOpenIni_Click(sender As Object, e As EventArgs) Handles menuOpenIni.Click
         openIni()
     End Sub
 
@@ -121,7 +121,7 @@ Public Class frmMain
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
-    Private Sub btnReadIni_Click(sender As Object, e As EventArgs) Handles btnReadIni.Click
+    Private Sub menuReadIni_Click(sender As Object, e As EventArgs) Handles menuReadIni.Click
         readIni()
     End Sub
 
@@ -130,7 +130,7 @@ Public Class frmMain
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
-    Private Sub btnOpenLog_Click(sender As Object, e As EventArgs) Handles btnOpenLog.Click
+    Private Sub menuOpenLog_Click(sender As Object, e As EventArgs) Handles menuOpenLog.Click
         openLog()
     End Sub
 
