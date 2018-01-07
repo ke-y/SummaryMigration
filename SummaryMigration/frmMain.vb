@@ -108,6 +108,33 @@ Public Class frmMain
     End Sub
 
     ''' <summary>
+    ''' iniファイルを開く
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub btnOpenIni_Click(sender As Object, e As EventArgs) Handles btnOpenIni.Click
+        openIni()
+    End Sub
+
+    ''' <summary>
+    ''' iniファイルの内容を反映する
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub btnReadIni_Click(sender As Object, e As EventArgs) Handles btnReadIni.Click
+        readIni()
+    End Sub
+
+    ''' <summary>
+    ''' ログファイルを開く
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub btnOpenLog_Click(sender As Object, e As EventArgs) Handles btnOpenLog.Click
+        openLog()
+    End Sub
+
+    ''' <summary>
     ''' 終了
     ''' </summary>
     ''' <param name="sender"></param>
@@ -251,6 +278,41 @@ Public Class frmMain
             For i = 0 To errList.Count - 1
                 MsgBox(errList.Item(i))
             Next i
+        End If
+
+    End Sub
+
+    ''' <summary>
+    ''' iniファイルを開く
+    ''' </summary>
+    Private Sub openIni()
+        Dim file_pass As String
+
+        putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Open the Ini file")
+
+        file_pass = env.appPath & env.appIni
+        If checkExists(file_pass, True) Then
+            Shell(env.editorPath & " " & file_pass, vbNormalFocus)
+        Else
+            MsgBox(file_pass & "が存在しません" & vbCrLf & "システムを終了します")
+
+            putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "===== Stop System =====")
+            Close()
+        End If
+
+    End Sub
+
+    ''' <summary>
+    ''' logファイルを開く
+    ''' </summary>
+    Private Sub openLog()
+        Dim file_pass As String
+
+        putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Open the Log file")
+
+        file_pass = env.appPath & "\" & env.appLog & "\" & My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log"
+        If checkExists(file_pass, True) Then
+            Shell(env.editorPath & " " & file_pass, vbNormalFocus)
         End If
 
     End Sub

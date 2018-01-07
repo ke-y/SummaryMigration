@@ -28,6 +28,9 @@ Partial Class frmMain
         Me.status = New System.Windows.Forms.Label()
         Me.btnExit = New System.Windows.Forms.Button()
         Me.btnOutput = New System.Windows.Forms.Button()
+        Me.btnOpenIni = New System.Windows.Forms.Button()
+        Me.btnReadIni = New System.Windows.Forms.Button()
+        Me.btnOpenLog = New System.Windows.Forms.Button()
         CType(Me.dataview, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -73,9 +76,9 @@ Partial Class frmMain
         'btnExit
         '
         Me.btnExit.BackColor = System.Drawing.SystemColors.ButtonFace
-        Me.btnExit.Location = New System.Drawing.Point(990, 12)
+        Me.btnExit.Location = New System.Drawing.Point(1031, 12)
         Me.btnExit.Name = "btnExit"
-        Me.btnExit.Size = New System.Drawing.Size(119, 30)
+        Me.btnExit.Size = New System.Drawing.Size(78, 30)
         Me.btnExit.TabIndex = 4
         Me.btnExit.Text = "終了"
         Me.btnExit.UseVisualStyleBackColor = False
@@ -90,12 +93,45 @@ Partial Class frmMain
         Me.btnOutput.Text = "ファイル出力"
         Me.btnOutput.UseVisualStyleBackColor = False
         '
+        'btnOpenIni
+        '
+        Me.btnOpenIni.BackColor = System.Drawing.SystemColors.ButtonFace
+        Me.btnOpenIni.Location = New System.Drawing.Point(676, 12)
+        Me.btnOpenIni.Name = "btnOpenIni"
+        Me.btnOpenIni.Size = New System.Drawing.Size(100, 30)
+        Me.btnOpenIni.TabIndex = 6
+        Me.btnOpenIni.Text = "設定ファイルを開く"
+        Me.btnOpenIni.UseVisualStyleBackColor = False
+        '
+        'btnReadIni
+        '
+        Me.btnReadIni.BackColor = System.Drawing.SystemColors.ButtonFace
+        Me.btnReadIni.Location = New System.Drawing.Point(782, 12)
+        Me.btnReadIni.Name = "btnReadIni"
+        Me.btnReadIni.Size = New System.Drawing.Size(100, 30)
+        Me.btnReadIni.TabIndex = 7
+        Me.btnReadIni.Text = "設定反映"
+        Me.btnReadIni.UseVisualStyleBackColor = False
+        '
+        'btnOpenLog
+        '
+        Me.btnOpenLog.BackColor = System.Drawing.SystemColors.ButtonFace
+        Me.btnOpenLog.Location = New System.Drawing.Point(902, 12)
+        Me.btnOpenLog.Name = "btnOpenLog"
+        Me.btnOpenLog.Size = New System.Drawing.Size(100, 30)
+        Me.btnOpenLog.TabIndex = 8
+        Me.btnOpenLog.Text = "ログファイルを開く"
+        Me.btnOpenLog.UseVisualStyleBackColor = False
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(186, Byte), Integer), CType(CType(211, Byte), Integer), CType(CType(243, Byte), Integer))
         Me.ClientSize = New System.Drawing.Size(1117, 565)
+        Me.Controls.Add(Me.btnOpenLog)
+        Me.Controls.Add(Me.btnReadIni)
+        Me.Controls.Add(Me.btnOpenIni)
         Me.Controls.Add(Me.btnOutput)
         Me.Controls.Add(Me.btnExit)
         Me.Controls.Add(Me.status)
@@ -116,4 +152,7 @@ Partial Class frmMain
     Friend WithEvents status As Label
     Friend WithEvents btnExit As Button
     Friend WithEvents btnOutput As Button
+    Friend WithEvents btnOpenIni As Button
+    Friend WithEvents btnReadIni As Button
+    Friend WithEvents btnOpenLog As Button
 End Class
