@@ -5,11 +5,13 @@ Friend Class dbConnect
     Private _conn As SQLiteConnection
     Private _cmd As SQLiteCommand
     Private _adp As SQLiteDataAdapter
+    Private _errList As List(Of String)
 
     Friend Sub New()
         _conn = New SQLiteConnection
         _cmd = New SQLiteCommand
         _adp = New SQLiteDataAdapter
+        _errList = New List(Of String)
     End Sub
 
     ''' <summary>
@@ -166,6 +168,8 @@ Friend Class dbConnect
                 tmpnum = ExecuteNonQuery(strSql(index))
                 If tmpnum <> -1 Then
                     count = count + tmpnum
+                Else
+                    _errList.Add(strSql(index))
                 End If
             Next
         Catch ex As Exception
@@ -201,4 +205,7 @@ Friend Class dbConnect
         Return result
     End Function
 
+    Friend Function ProcError() As List(Of String)
+        Return _errList
+    End Function
 End Class
