@@ -17,5 +17,5 @@ CREATE TABLE SummaryData (
 	   NewPatID    text not null,
 	   NewFilePath text not null,
        NewFileName text not null,
-	   primary key(FilePath, DocID)
+	   primary key(DocID, OPDate)
        );
