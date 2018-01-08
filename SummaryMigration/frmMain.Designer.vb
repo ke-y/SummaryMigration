@@ -33,6 +33,7 @@ Partial Class frmMain
         Me.menuOpenIni = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuReadIni = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuOpenLog = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuOpenStrage = New System.Windows.Forms.ToolStripMenuItem()
         CType(Me.dataview, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip1.SuspendLayout()
         Me.SuspendLayout()
@@ -107,7 +108,7 @@ Partial Class frmMain
         '
         'ファイルToolStripMenuItem
         '
-        Me.ファイルToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuOpenIni, Me.menuReadIni, Me.menuOpenLog})
+        Me.ファイルToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuOpenIni, Me.menuReadIni, Me.menuOpenLog, Me.menuOpenStrage})
         Me.ファイルToolStripMenuItem.Name = "ファイルToolStripMenuItem"
         Me.ファイルToolStripMenuItem.Size = New System.Drawing.Size(51, 20)
         Me.ファイルToolStripMenuItem.Text = "ファイル"
@@ -129,6 +130,12 @@ Partial Class frmMain
         Me.menuOpenLog.Name = "menuOpenLog"
         Me.menuOpenLog.Size = New System.Drawing.Size(152, 22)
         Me.menuOpenLog.Text = "logファイルを開く"
+        '
+        'menuOpenStrage
+        '
+        Me.menuOpenStrage.Name = "menuOpenStrage"
+        Me.menuOpenStrage.Size = New System.Drawing.Size(152, 22)
+        Me.menuOpenStrage.Text = "ストレージを開く"
         '
         'frmMain
         '
@@ -164,4 +171,5 @@ Partial Class frmMain
     Friend WithEvents menuOpenIni As ToolStripMenuItem
     Friend WithEvents menuReadIni As ToolStripMenuItem
     Friend WithEvents menuOpenLog As ToolStripMenuItem
+    Friend WithEvents menuOpenStrage As ToolStripMenuItem
 End Class

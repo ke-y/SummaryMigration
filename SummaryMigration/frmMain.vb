@@ -135,6 +135,15 @@ Public Class frmMain
     End Sub
 
     ''' <summary>
+    ''' 格納先ストレージを開く
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub menuOpenStrage_Click(sender As Object, e As EventArgs) Handles menuOpenStrage.Click
+        openStrage()
+    End Sub
+
+    ''' <summary>
     ''' 終了
     ''' </summary>
     ''' <param name="sender"></param>
@@ -315,6 +324,12 @@ Public Class frmMain
             Shell(env.editorPath & " " & file_pass, vbNormalFocus)
         End If
 
+    End Sub
+
+    Private Sub openStrage()
+        putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Open the Root Dir")
+
+        Process.Start(env.rootDir)
     End Sub
 
     ''' <summary>
