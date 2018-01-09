@@ -326,6 +326,9 @@ Public Class frmMain
 
     End Sub
 
+    ''' <summary>
+    ''' 格納先ストレージを開く
+    ''' </summary>
     Private Sub openStrage()
         putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "Open the Root Dir")
 
@@ -389,9 +392,11 @@ Public Class frmMain
             If Not logoffDir(env.summaryDrive, msg) Then
                 putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Network Dir logoff Error. Win32 API Error Code = " & msg & " [" & env.summaryPath & "]")
             End If
+
         Else
             putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Network Dir login Error. Win32 API Error Code = " & msg & " [" & env.summaryPath & "]")
         End If
+
 
         Return csvlist
     End Function
@@ -408,6 +413,7 @@ Public Class frmMain
         Dim newFilePath As String = ""
         Dim newName As String = ""
         Dim strSql As New List(Of String)
+        Dim strItem As String
         Dim index As Integer = 0
         Dim msg As String = ""
 
@@ -428,8 +434,9 @@ Public Class frmMain
                     newFilePath = " "
                     newName = " "
                     checkMigration(strline, outputFlg, newPatId, newFilePath, newName)
+                    strItem = strMid(csvlist.Item(index), 1, csvlist.Item(index).LastIndexOf("\"))
                     If outputFlg = "C" Then
-                        strSql.Add("insert into SummaryData values (" & strline & ", " & Chr(34) & outputFlg & Chr(34) & ", " & Chr(34) & newPatId & Chr(34) & ", " & Chr(34) & newFilePath & Chr(34) & ", " & Chr(34) & newName & Chr(34) & ")")
+                        strSql.Add("insert into SummaryData values (" & Chr(34) & strItem & Chr(34) & ", " & strline & ", " & Chr(34) & outputFlg & Chr(34) & ", " & Chr(34) & newPatId & Chr(34) & ", " & Chr(34) & newFilePath & Chr(34) & ", " & Chr(34) & newName & Chr(34) & ")")
                     End If
                 Loop
             Next
@@ -503,6 +510,7 @@ Public Class frmMain
         Dim allFile As IO.FileInfo()
         Dim dtTbl As New DataTable
         Dim dataDir As String = ""
+        Dim oldFile As String = ""
         Dim count As Integer = 0
         Dim msg As String = ""
 
@@ -510,34 +518,24 @@ Public Class frmMain
 
         If loginDir(env.summaryDrive, env.summaryPath, env.loginId, env.loginPass, msg) Then
             If csvData.ProcSelect("select * from SummaryData where outputFlg = 'C'", dtTbl) Then
-                dirInfo = New IO.DirectoryInfo(env.summaryPath)
-                allFile = dirInfo.GetFiles(env.copyFile, IO.SearchOption.AllDirectories)
+                For Each tbldata As DataRow In dtTbl.Rows
+                    oldFile = tbldata("CsvPath").ToString() & "\" & tbldata("DocID").ToString
+                    If checkExists(oldFile, True) Then
+                        dataDir = env.rootDir & "\" & tbldata("NewFilePath").ToString
 
-                For Each tblData As DataRow In dtTbl.Rows
-                    dataDir = env.rootDir & "\" & tblData("NewFilePath").ToString
-                    If Not checkExists(dataDir, False) Then
-                        IO.Directory.CreateDirectory(dataDir)
+                        If Not checkExists(dataDir, False) Then
+                            IO.Directory.CreateDirectory(dataDir)
+                        End If
+
+                        IO.File.Copy(oldFile, dataDir & "\" & tbldata("NewFileName").ToString, True)
+
+                        count = count + 1
+                        If (count Mod 100) = 0 Then
+                            putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  SummaryFile = " & count)
+                        End If
+                    Else
+                        putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Base File is not Found [" & oldFile & "]")
                     End If
-
-                    Try
-                        For Each f As IO.FileInfo In allFile
-                            If tblData("DocID").ToString = f.Name Then
-                                IO.File.Copy(f.FullName, dataDir & "\" & tblData("NewFileName").ToString, True)
-
-                                count = count + 1
-                                If (count Mod 100) = 0 Then
-                                    putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  SummaryFile = " & count)
-                                End If
-                                Exit For
-                            End If
-                        Next
-                    Catch ex As IO.FileNotFoundException
-                        putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Base File is not Found [" & env.summaryPath & "\" & tblData("DocID").ToString & "]")
-                    Catch ex As UnauthorizedAccessException
-                        putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : File is not Overwrite [" & dataDir & "\" & tblData("NewFileName").ToString & "]")
-                    Catch ex As Exception
-                        putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  CAUTION : Unknown Error [Original=" & tblData("DocID").ToString & " , CopyTo=" & tblData("NewFileName").ToString & "]")
-                    End Try
                 Next
 
                 putLog(env.appPath & "\" & env.appLog, My.Application.Info.ProductName & "_" & Date.Now.ToString("yyyyMMdd") & ".log", "  Total Copy SummaryFile = " & count)

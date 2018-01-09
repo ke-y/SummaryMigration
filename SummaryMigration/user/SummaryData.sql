@@ -1,4 +1,5 @@
 CREATE TABLE SummaryData (
+       CsvPath     text not null,
        FilePath    text not null,
        DocID       text not null,
        PatID       text not null,
