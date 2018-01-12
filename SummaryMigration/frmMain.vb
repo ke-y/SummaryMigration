@@ -480,7 +480,8 @@ Public Class frmMain
         docCode = strLineAttr(3).Replace(Chr(34), "")
         If env.getTargetCode().IndexOf(docCode) <> -1 Then
             strTmp = Split(strLineAttr(1), "_")
-            docDate = strTmp(1)
+            'docDate = strTmp(1)
+            docDate = strMid(strLineAttr(11).Replace(Chr(34), ""), 1, 8)    'カルテ移行ツールに合わせて、更新日をDocDateにする
 
             Try
                 If Integer.Parse(docDate) >= Integer.Parse(env.fromDay) Then
@@ -506,8 +507,6 @@ Public Class frmMain
     ''' </summary>
     ''' <returns></returns>
     Private Function copySummaryFile() As Integer
-        Dim dirInfo As IO.DirectoryInfo
-        Dim allFile As IO.FileInfo()
         Dim dtTbl As New DataTable
         Dim dataDir As String = ""
         Dim oldFile As String = ""
